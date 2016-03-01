@@ -3,6 +3,7 @@
 namespace jdavidbakr\MailTracker;
 
 use Illuminate\Http\Request;
+use Response;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -21,7 +22,7 @@ class MailTrackerController extends Controller
     	$response->header('Last-Modified','Wed, 11 Jan 2006 12:59:00 GMT');
     	$response->header('Pragma','no-cache');
 
-		$tracker = Model\MailTracker::where('hash',$hash)
+		$tracker = Model\SentEmail::where('hash',$hash)
 			->first();
 		if($tracker) {
 			$tracker->opens++;
@@ -33,7 +34,8 @@ class MailTrackerController extends Controller
 
     public function getL($url, $hash)
     {
-    	$tracker = Model\MailTracker::where('hash',$hash)
+    	$url = base64_decode($url);
+    	$tracker = Model\SentEmail::where('hash',$hash)
     		->first();
     	if($tracker) {
     		$tracker->clicks++;

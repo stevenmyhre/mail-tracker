@@ -94,7 +94,7 @@ class MailTracker implements \Swift_Events_SendListener {
     {
     	return $matches[1].action('\jdavidbakr\MailTracker\MailTrackerController@getL',
     		[
-    			urlencode($matches[2]),
+    			base64_encode($matches[2]),
     			$this->hash
     		]);
     }
