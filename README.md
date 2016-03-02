@@ -2,9 +2,6 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
-[![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
 MailTracker will hook into all outgoing emails from Laravel and inject a tracking code into it.  It will also store the rendered email in the database.  There is also an interface to view sent emails.
@@ -71,10 +68,10 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/jdavidbakr/MailTracker.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/jdavidbakr/MailTracker.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/jdavidbakr/MailTracker
+[link-packagist]: https://packagist.org/packages/jdavidbakr/mail-tracker
 [link-travis]: https://travis-ci.org/jdavidbakr/MailTracker
 [link-scrutinizer]: https://scrutinizer-ci.com/g/jdavidbakr/MailTracker/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/jdavidbakr/MailTracker
-[link-downloads]: https://packagist.org/packages/jdavidbakr/MailTracker
+[link-downloads]: https://packagist.org/packages/jdavidbakr/mail-tracker
 [link-author]: https://github.com/jdavidbakr
 [link-contributors]: ../../contributors
