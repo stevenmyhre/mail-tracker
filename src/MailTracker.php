@@ -30,7 +30,7 @@ class MailTracker implements \Swift_Events_SendListener {
         }    	
 
     	Model\SentEmail::create([
-    			'hash'=>str_random(32),
+    			'hash'=>$hash,
     			'headers'=>$headers->toString(),
     			'sender'=>$headers->get('from')->getFieldBody(),
     			'recipient'=>$headers->get('to')->getFieldBody(),
@@ -64,7 +64,7 @@ class MailTracker implements \Swift_Events_SendListener {
     protected function injectTrackingPixel($html, $hash)
     {
     	// Append the tracking url
-    	$tracking_pixel = '<img src="'.action('\jdavidbakr\MailTracker\MailTrackerController@getT',[$hash])." />";
+    	$tracking_pixel = '<img src="'.action('\jdavidbakr\MailTracker\MailTrackerController@getT',[$hash]).'" />';
 
     	$linebreak = str_random(32);
     	$html = str_replace("\n",$linebreak,$html);
