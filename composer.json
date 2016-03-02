@@ -25,6 +25,9 @@
         "scrutinizer/ocular": "~1.1",
         "squizlabs/php_codesniffer": "~2.3"
     },
+    "suggest": {
+        "fedeisas/laravel-mail-css-inliner": "Automatically inlines CSS into all outgoing mail."
+    },
     "autoload": {
         "psr-4": {
             "jdavidbakr\\MailTracker\\": "src"
