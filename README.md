@@ -11,7 +11,7 @@ MailTracker will hook into all outgoing emails from Laravel and inject a trackin
 Via Composer
 
 ``` bash
-$ composer require jdavidbakr/MailTracker
+$ composer require jdavidbakr/mail-tracker
 ```
 
 Add the following to the providers array in config/app.php:
