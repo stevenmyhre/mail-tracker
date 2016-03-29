@@ -92,9 +92,15 @@ class MailTracker implements \Swift_Events_SendListener {
 
     protected function inject_link_callback($matches)
     {
+        if (empty($matches[2])) {
+            $url = app()->make('url')->to('/');
+        } else {
+            $url = $matches[2];
+        }
+        
     	return $matches[1].action('\jdavidbakr\MailTracker\MailTrackerController@getL',
     		[
-    			base64_encode($matches[2]),
+    			base64_encode($url),
     			$this->hash
     		]);
     }
