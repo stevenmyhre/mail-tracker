@@ -41,7 +41,7 @@ $ composer require jdavidbakr/mail-tracker
 Register the following service provider in bootstrap/app.php
 
 ``` php
-jdavidbakr\MailTracker\MailTrackerServiceProvider::class,
+jdavidbakr\MailTracker\MailTrackerServiceProvider::class
 ```
 
 Copy vendor/jdavidbakr/mail-tracker/migrations/2016_03_01_193027_create_sent_emails_table.php and vendor/jdavidbakr/mail-tracker/config/mail-tracker.php to your respective migrations and config folders. You may have to create a config folder if it doesn't already exist.
