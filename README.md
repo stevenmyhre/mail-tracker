@@ -4,9 +4,9 @@
 [![Software License][ico-license]](LICENSE.md)
 [![Total Downloads][ico-downloads]][link-downloads]
 
-MailTracker will hook into all outgoing emails from Laravel and inject a tracking code into it.  It will also store the rendered email in the database.  There is also an interface to view sent emails.
+MailTracker will hook into all outgoing emails from Laravel/Lumen and inject a tracking code into it.  It will also store the rendered email in the database.  There is also an interface to view sent emails.
 
-## Install
+## Install (Laravel)
 
 Via Composer
 
@@ -24,6 +24,27 @@ Publish the config file and migration
 ``` bash
 $ php artisan vendor publish
 ```
+
+Run the migration
+``` bash
+$ php artisan migrate
+```
+
+## Install (Lumen)
+
+Via Composer
+
+``` bash
+$ composer require jdavidbakr/mail-tracker
+```
+
+Register the following service provider in bootstrap/app.php
+
+``` php
+jdavidbakr\MailTracker\MailTrackerServiceProvider::class,
+```
+
+Copy vendor/jdavidbakr/mail-tracker/migrations/2016_03_01_193027_create_sent_emails_table.php and vendor/jdavidbakr/mail-tracker/config/mail-tracker.php to your respective migrations and config folders. You may have to create a config folder if it doesn't already exist.
 
 Run the migration
 ``` bash
