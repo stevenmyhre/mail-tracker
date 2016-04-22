@@ -3,25 +3,37 @@
 namespace jdavidbakr\MailTracker;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\Router;
-use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\Route;
 
 class MailTrackerServiceProvider extends ServiceProvider
 {
+    /**
+     * Check to see if we're using lumen or laravel.
+     * 
+     * @return bool
+     */
+    public function isLumen() 
+    {
+        $lumenClass = 'Laravel\Lumen\Application';
+        return ($this->app instanceof $lumenClass);
+    }
+
     /**
      * Perform post-registration booting of services.
      *
      * @return void
      */
-    public function boot(Dispatcher $events, Router $router)
+    public function boot()
     {
         // Publish pieces
-        $this->publishes([
-            __DIR__.'/../config/mail-tracker.php' => config_path('mail-tracker.php')
-        ], 'config');
-        $this->publishes([
-            __DIR__.'/../migrations/2016_03_01_193027_create_sent_emails_table.php' => database_path('migrations/2016_03_01_193027_create_sent_emails_table.php')
-        ], 'config');
+        if (!$this->isLumen()) {
+            $this->publishes([
+                __DIR__.'/../config/mail-tracker.php' => config_path('mail-tracker.php')
+            ], 'config');
+            $this->publishes([
+                __DIR__.'/../migrations/2016_03_01_193027_create_sent_emails_table.php' => database_path('migrations/2016_03_01_193027_create_sent_emails_table.php')
+            ], 'config');
+        }
 
         // Hook into the mailer
         $this->app['mailer']->getSwiftMailer()->registerPlugin(new MailTracker());
@@ -30,10 +42,18 @@ class MailTrackerServiceProvider extends ServiceProvider
         $config = $this->app['config']->get('mail-tracker.route', []);
         $config['namespace'] = 'jdavidbakr\MailTracker';
 
-        $router->group($config, function($router)
-        {
-            $router->controller('/', 'MailTrackerController');
-        });
+        if (!$this->isLumen()) {
+            Route::group($config, function()
+            {
+                Route::controller('/', 'MailTrackerController');
+            });
+        } else {
+            $app = $this->app;
+            $app->group($config, function () use ($app) {
+                $app->get('t', 'MailTrackerController@getT');
+                $app->get('l', 'MailTrackerController@getL');
+            });
+        }
     }
 
     /**
