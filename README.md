@@ -61,6 +61,62 @@ Once installed, all outgoing mail will be logged to the database.  The following
 * **route**: The route information for the tracking URLs.  Set the prefix and middlware as desired.
 * **admin-route**: The route information for the admin.  Set the prefix and middleware. *Note that this is not yet built.*
 
+## Events
+
+When an email is viewed or a link is clicked, its tracking information is counted in the database using the jdavidbark\MailTracker\Model\SentEmail model. You may want to do additional processing on these events, so an event is fired in both cases:
+
+* jdavidbakr\MailTracker\Events\ViewEmailEvent
+* jdavidbakr\MailTracker\Events\LinkClickedEvent
+
+To install an event listener, you will want to create a file like the following:
+
+``` php
+<?php
+
+namespace App\Listeners;
+
+use jdavidbakr\MailTracker\Events\ViewEmailEvent;
+
+class EmailViewed
+{
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  ViewEmailEvent  $event
+     * @return void
+     */
+    public function handle(ViewEmailEvent $event)
+    {
+        // Access the model using $event->sent_email...
+    }
+}
+```
+
+Then you must register the event in your \App\Providers\EventServiceProvider $listen array:
+
+``` php
+/**
+ * The event listener mappings for the application.
+ *
+ * @var array
+ */
+protected $listen = [
+    'jdavidbakr\MailTracker\Events\ViewEmailEvent' => [
+        'App\Listeners\EmailViewed',
+    ],
+];
+```
+
 ## TODO
 
 Currently this plugin is only tracking the outgoing mail. There is no view yet to explore the existing data.

@@ -4,9 +4,13 @@ namespace jdavidbakr\MailTracker;
 
 use Illuminate\Http\Request;
 use Response;
+use Event;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+
+use jdavidbakr\MailTracker\Events\ViewEmailEvent;
+use jdavidbakr\MailTracker\Events\LinkClickedEvent;
 
 class MailTrackerController extends Controller
 {
@@ -28,6 +32,7 @@ class MailTrackerController extends Controller
 			$tracker->opens++;
 			$tracker->save();
 		}
+        Event::fire(new ViewEmailEvent($tracker));
 
 		return $response;
     }
@@ -41,6 +46,7 @@ class MailTrackerController extends Controller
     		$tracker->clicks++;
     		$tracker->save();
     	}
+        Event::fire(new LinkClickedEvent($tracker));
 
     	return redirect($url);
     }
