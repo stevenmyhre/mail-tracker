@@ -43,13 +43,12 @@ class AddressVerificationTest extends TestCase
 		$clicks = $track->clicks;
 		$clicks++;
 
-		$redirect = 'http://www.google.com';
+		$redirect = 'http://mfn1.myfootballnow.com/community/thread/2/1636?page=4&amp;x=tRnYCfp9mT#10111';
 
 		$url = action('\jdavidbakr\MailTracker\MailTrackerController@getL',[
-				base64_encode($redirect),
+    			str_replace("/","$",base64_encode($redirect)), // Replace slash with dollar sign
 				$track->hash
 			]);
-
 		$this->call('GET',$url);
 		$this->assertRedirectedTo($redirect);
 
