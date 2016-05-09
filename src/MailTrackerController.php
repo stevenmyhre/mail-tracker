@@ -31,8 +31,8 @@ class MailTrackerController extends Controller
 		if($tracker) {
 			$tracker->opens++;
 			$tracker->save();
+            Event::fire(new ViewEmailEvent($tracker));
 		}
-        Event::fire(new ViewEmailEvent($tracker));
 
 		return $response;
     }
@@ -45,8 +45,8 @@ class MailTrackerController extends Controller
     	if($tracker) {
     		$tracker->clicks++;
     		$tracker->save();
+            Event::fire(new LinkClickedEvent($tracker));
     	}
-        Event::fire(new LinkClickedEvent($tracker));
 
     	return redirect($url);
     }

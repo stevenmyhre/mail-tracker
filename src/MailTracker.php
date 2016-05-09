@@ -100,8 +100,14 @@ class MailTracker implements \Swift_Events_SendListener {
         
     	return $matches[1].action('\jdavidbakr\MailTracker\MailTrackerController@getL',
     		[
-    			str_replace("/","$",base64_encode($url)), // Replace slash with dollar sign
+    			MailTracker::hash_url($url),
     			$this->hash
     		]);
+    }
+
+    static public function hash_url($url)
+    {
+        // Replace "/" with "$"
+        return str_replace("/","$",base64_encode($url));
     }
 }

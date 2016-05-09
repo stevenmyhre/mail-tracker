@@ -46,7 +46,7 @@ class AddressVerificationTest extends TestCase
 		$redirect = 'http://mfn1.myfootballnow.com/community/thread/2/1636?page=4&amp;x=tRnYCfp9mT#10111';
 
 		$url = action('\jdavidbakr\MailTracker\MailTrackerController@getL',[
-    			str_replace("/","$",base64_encode($redirect)), // Replace slash with dollar sign
+    			\jdavidbakr\MailTracker\MailTracker::hash_url($redirect), // Replace slash with dollar sign
 				$track->hash
 			]);
 		$this->call('GET',$url);
@@ -54,5 +54,13 @@ class AddressVerificationTest extends TestCase
 
 		$track = $track->fresh();
 		$this->assertEquals($clicks, $track->clicks);
+
+		// Do it with an invalid hash
+		$url = action('\jdavidbakr\MailTracker\MailTrackerController@getL',[
+    			\jdavidbakr\MailTracker\MailTracker::hash_url($redirect), // Replace slash with dollar sign
+				'bad-hash'
+			]);
+		$this->call('GET',$url);
+		$this->assertRedirectedTo($redirect);
 	}
 }
