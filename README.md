@@ -22,7 +22,7 @@ jdavidbakr\MailTracker\MailTrackerServiceProvider::class,
 
 Publish the config file and migration
 ``` bash
-$ php artisan vendor publish
+$ php artisan vendor:publish
 ```
 
 Run the migration
