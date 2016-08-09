@@ -36,6 +36,8 @@ class MailTracker implements \Swift_Events_SendListener {
     			'recipient'=>$headers->get('to')->getFieldBody(),
     			'subject'=>$headers->get('subject')->getFieldBody(),
     			'content'=>$original_content,
+                'opens'=>0,
+                'clicks'=>0,
     		]);
 
     	// Purge old records
