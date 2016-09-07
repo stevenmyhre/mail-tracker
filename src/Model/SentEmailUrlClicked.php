@@ -3,7 +3,7 @@
 namespace jdavidbakr\MailTracker\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Model\SentEmail;
+// use Model\SentEmail;
 
 class SentEmailUrlClicked extends Model
 {
@@ -12,6 +12,7 @@ class SentEmailUrlClicked extends Model
     protected $fillable = [
     	'sent_email_id',
     	'url',
+        'hash',
     	'clicks',
     ];
 

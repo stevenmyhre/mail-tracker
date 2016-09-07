@@ -53,7 +53,7 @@ class MailTrackerController extends Controller
                 $url_clicked = Model\SentEmailUrlClicked::create([
                     'sent_email_id' => $tracker->id,
                     'url' => $url,
-                    'hash' => $hash,
+                    'hash' => $tracker->hash,
                 ]);
             }
             Event::fire(new LinkClickedEvent($tracker));

@@ -14,7 +14,7 @@ class CreateSentEmailsUrlClickedTable extends Migration
     {
         Schema::create('sent_emails_url_clicked', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('sent_email_id');
+            $table->integer('sent_email_id')->unsigned();
             $table->foreign('sent_email_id')->references('id')->on('sent_emails')->onDelete('cascade');
             $table->string('url');
             $table->char('hash',32);
