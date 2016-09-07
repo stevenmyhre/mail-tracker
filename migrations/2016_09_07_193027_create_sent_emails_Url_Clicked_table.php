@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSentEmailsTable extends Migration
+class CreateSentEmailsUrlClickedTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,13 @@ class CreateSentEmailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sent_emails', function (Blueprint $table) {
+        Schema::create('sent_emails_url_clicked', function (Blueprint $table) {
             $table->increments('id');
-            $table->char('hash',32)->unique();
-            $table->text('headers');
-            $table->string('sender');
-            $table->string('recipient');
-            $table->string('subject');
-            $table->text('content');
-            $table->integer('opens');
-            $table->integer('clicks');
+            $table->integer('sent_email_id');
+            $table->foreign('sent_email_id')->references('id')->on('sent_emails')->onDelete('cascade');
+            $table->string('url');
+            $table->char('hash',32);
+            $table->integer('clicks')->default('1');
             $table->timestamps();
         });
     }
