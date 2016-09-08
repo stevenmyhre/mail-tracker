@@ -9,10 +9,10 @@ class MailTrackerServiceProvider extends ServiceProvider
 {
     /**
      * Check to see if we're using lumen or laravel.
-     * 
+     *
      * @return bool
      */
-    public function isLumen() 
+    public function isLumen()
     {
         $lumenClass = 'Laravel\Lumen\Application';
         return ($this->app instanceof $lumenClass);
@@ -32,6 +32,9 @@ class MailTrackerServiceProvider extends ServiceProvider
             ], 'config');
             $this->publishes([
                 __DIR__.'/../migrations/2016_03_01_193027_create_sent_emails_table.php' => database_path('migrations/2016_03_01_193027_create_sent_emails_table.php')
+            ], 'config');
+            $this->publishes([
+                __DIR__.'/../migrations/2016_09_07_193027_create_sent_emails_Url_Clicked_table.php' => database_path('migrations/2016_09_07_193027_create_sent_emails_Url_Clicked_table.php')
             ], 'config');
         }
 
