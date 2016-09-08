@@ -45,7 +45,8 @@ class MailTrackerServiceProvider extends ServiceProvider
         if (!$this->isLumen()) {
             Route::group($config, function()
             {
-                Route::controller('/', 'MailTrackerController');
+                Route::get('t/{hash}', 'MailTrackerController@getT');
+                Route::get('l/{url}/{hash}', 'MailTrackerController@getL');
             });
         } else {
             $app = $this->app;
