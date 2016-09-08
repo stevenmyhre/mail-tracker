@@ -30,6 +30,6 @@ class CreateSentEmailsUrlClickedTable extends Migration
      */
     public function down()
     {
-        Schema::drop('sent_emails');
+        Schema::drop('sent_emails_url_clicked');
     }
 }
