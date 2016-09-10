@@ -36,6 +36,10 @@ class MailTrackerServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../migrations/2016_09_07_193027_create_sent_emails_Url_Clicked_table.php' => database_path('migrations/2016_09_07_193027_create_sent_emails_Url_Clicked_table.php')
             ], 'config');
+            $this->loadViewsFrom(__DIR__.'/views', 'emailTrakingViews');
+            $this->publishes([
+                __DIR__.'/views' => base_path('resources/views/vendor/emailTrakingViews'),
+                ]);
         }
 
         // Hook into the mailer
@@ -48,13 +52,35 @@ class MailTrackerServiceProvider extends ServiceProvider
         if (!$this->isLumen()) {
             Route::group($config, function()
             {
-                Route::controller('/', 'MailTrackerController');
+                Route::get('t/{hash}', 'MailTrackerController@getT')->name('mailTracker_t');
+                Route::get('l/{url}/{hash}', 'MailTrackerController@getL')->name('mailTracker_l');
             });
         } else {
             $app = $this->app;
             $app->group($config, function () use ($app) {
                 $app->get('t', 'MailTrackerController@getT');
                 $app->get('l', 'MailTrackerController@getL');
+            });
+        }
+        // Install the Admin routes
+        $config_admin = $this->app['config']->get('mail-tracker.admin-route', []);
+        $config_admin['namespace'] = 'jdavidbakr\MailTracker';
+
+        if (!$this->isLumen()) {
+            Route::group($config_admin, function()
+            {
+                Route::get('/', 'AdminController@getIndex')->name('mailTracker_Index');
+                Route::get('show-email/{id}', 'AdminController@getShowEmail')->name('mailTracker_ShowEmail');
+                Route::get('url-detail/{id}', 'AdminController@getUrlDetail')->name('mailTracker_UrlDetail');
+                Route::get('new-email', 'AdminController@getNewEmail')->name('mailTracker_NewEmail');
+                Route::get('send-email', 'AdminController@getSendEmail')->name('mailTracker_SendEmail');
+            });
+        } else {
+            $app = $this->app;
+            $app->group($config_admin, function () use ($app) {
+                $app->get('index', 'AdminController@getIndex');
+                $app->get('example-email', 'AdminController@getExampleEmail');
+                $app->get('url-detail', 'AdminController@getUrlDetail');
             });
         }
     }

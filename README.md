@@ -55,11 +55,14 @@ $ php artisan migrate
 
 Once installed, all outgoing mail will be logged to the database.  The following config options are available in config/mail-tracker.php:
 
+* **name**: set your App Name.
 * **inject-pixel**: set to true to inject a tracking pixel into all outgoing html emails.
 * **track-links**: set to true to rewrite all anchor href links to include a tracking link. The link will take the user back to your website which will then redirect them to the final destination after logging the click.
 * **expire-days**: How long in days that an email should be retained in your database.  If you are sending a lot of mail, you probably want it to eventually expire.  Set it to zero to never purge old emails from the database.
 * **route**: The route information for the tracking URLs.  Set the prefix and middlware as desired.
-* **admin-route**: The route information for the admin.  Set the prefix and middleware. *Note that this is not yet built.*
+* **admin-route**: The route information for the admin.  Set the prefix and middleware.
+* **admin-template**: The params for the Admin Panel and Views. You can integrate your existing Admin Panel with the MailTracker admin panel.
+* **date-format**: You can define the format to show dates in the Admin Panel. 
 
 ## Events
 
@@ -116,10 +119,17 @@ protected $listen = [
     ],
 ];
 ```
+## Views
 
-## TODO
+When you do the php artisan vendor:publish simple views will add to your resources/views/vendor/emailTrakingViews and you can customize.
 
-Currently this plugin is only tracking the outgoing mail. There is no view yet to explore the existing data.
+## Admin Panel
+
+The standard admin panel route is located at /email-manager.
+You can customize your route in the config file.
+You can see all sent emails, total opens, total urls clicks, show individuals emails and show the urls clicked details.
+Also you can send emails from your admin panel.
+All views (email tamplates, panel) can customize in resources/views/vendor/emailTrakingViews.
 
 ## Contributing
 
