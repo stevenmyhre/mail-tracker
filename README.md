@@ -125,7 +125,9 @@ When you do the php artisan vendor:publish simple views will add to your resourc
 
 ## Admin Panel
 
-The standard admin panel route is located at /email-manager.
+Config your admin-route in the config file. Set the prefix and middlware.
+The route name is 'mailTracker_Index'. The standard admin panel route is located at /email-manager.
+You can use route names to include them into your existing admin menu.
 You can customize your route in the config file.
 You can see all sent emails, total opens, total urls clicks, show individuals emails and show the urls clicked details.
 Also you can send emails from your admin panel.
