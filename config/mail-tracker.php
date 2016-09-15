@@ -49,9 +49,9 @@ return [
     /**
      * Admin Tamplate
 	 * example
-	 * 'name' => 'layouts.app' for Deafult emailTraking use 'emailTrakingViews::layouts.app'
-	 * 'section' => 'content' for Deafult emailTraking use 'content'
-	 * 'styles_section' => 'styles' for Deafult emailTraking use 'styles'
+	 * 'name' => 'layouts.app' for Default emailTraking use 'emailTrakingViews::layouts.app'
+	 * 'section' => 'content' for Default emailTraking use 'content'
+	 * 'styles_section' => 'styles' for Default emailTraking use 'styles'
      */
     'admin-template' => [
         'name' => 'emailTrakingViews::layouts.app',
