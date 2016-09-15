@@ -22,7 +22,7 @@ jdavidbakr\MailTracker\MailTrackerServiceProvider::class,
 
 Publish the config file and migration
 ``` bash
-$ php artisan vendor:publish
+$ php artisan vendor:publish --provider='jdavidbakr\MailTracker\MailTrackerServiceProvider'
 ```
 
 Run the migration
@@ -62,7 +62,7 @@ Once installed, all outgoing mail will be logged to the database.  The following
 * **route**: The route information for the tracking URLs.  Set the prefix and middlware as desired.
 * **admin-route**: The route information for the admin.  Set the prefix and middleware.
 * **admin-template**: The params for the Admin Panel and Views. You can integrate your existing Admin Panel with the MailTracker admin panel.
-* **date-format**: You can define the format to show dates in the Admin Panel. 
+* **date-format**: You can define the format to show dates in the Admin Panel.
 
 ## Events
 
