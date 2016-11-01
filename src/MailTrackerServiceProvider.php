@@ -58,8 +58,8 @@ class MailTrackerServiceProvider extends ServiceProvider
         } else {
             $app = $this->app;
             $app->group($config, function () use ($app) {
-                $app->get('t', 'MailTrackerController@getT');
-                $app->get('l', 'MailTrackerController@getL');
+                $app->get('t', 'MailTrackerController@getT')->name('mailTracker_t');
+                $app->get('l', 'MailTrackerController@getL')->name('mailTracker_l');
             });
         }
         // Install the Admin routes
@@ -79,9 +79,12 @@ class MailTrackerServiceProvider extends ServiceProvider
         } else {
             $app = $this->app;
             $app->group($config_admin, function () use ($app) {
-                $app->get('index', 'AdminController@getIndex');
-                $app->get('example-email', 'AdminController@getExampleEmail');
-                $app->get('url-detail', 'AdminController@getUrlDetail');
+                $app->get('/', 'AdminController@getIndex')->name('mailTracker_Index');
+                $app->post('search', 'AdminController@postSearch')->name('mailTracker_Search');
+                $app->get('clear-search', 'AdminController@clearSearch')->name('mailTracker_ClearSearch');
+                $app->get('show-email/{id}', 'AdminController@getShowEmail')->name('mailTracker_ShowEmail');
+                $app->get('url-detail/{id}', 'AdminController@getUrlDetail')->name('mailTracker_UrlDetail');
+                $app->get('send-email', 'AdminController@getSendEmail')->name('mailTracker_SendEmail');
             });
         }
     }
