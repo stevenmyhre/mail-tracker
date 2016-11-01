@@ -66,6 +66,8 @@ class AddressVerificationTest extends TestCase
 		$this->call('GET',$url);
 		$this->assertRedirectedTo($redirect);
 
+		Event::assertFired(jdavidbakr\MailTracker\Events\LinkClickedEvent::class);
+
 		$this->seeInDatabase('sent_emails_url_clicked',[
 				'url'=>$redirect,
 				'clicks'=>1,
@@ -81,7 +83,5 @@ class AddressVerificationTest extends TestCase
 			]);
 		$this->call('GET',$url);
 		$this->assertRedirectedTo($redirect);
-
-		Event::assertFired(jdavidbakr\MailTracker\Events\LinkClickedEvent::class);
 	}
 }

@@ -6,12 +6,29 @@
 
 MailTracker will hook into all outgoing emails from Laravel/Lumen and inject a tracking code into it.  It will also store the rendered email in the database.  There is also an interface to view sent emails.
 
+## Upgrade from 1.x
+
+First, upgrade to version 2.0 by running:
+
+``` bash
+$ composer require jdavidbakr/mail-tracker ~2.0
+```
+
+Version 2.0 contains a new model that tracks the links that were clicked on.  This requires a migration to create the table.  Be sure to run
+
+``` bash
+$ php artisan vendor:publish
+$ php artisan migrate
+```
+
+after running composer update.
+
 ## Install (Laravel)
 
 Via Composer
 
 ``` bash
-$ composer require jdavidbakr/mail-tracker
+$ composer require jdavidbakr/mail-tracker ~2.0
 ```
 
 Add the following to the providers array in config/app.php:

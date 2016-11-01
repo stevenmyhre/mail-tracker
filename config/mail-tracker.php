@@ -51,17 +51,20 @@ return [
 	 * example
 	 * 'name' => 'layouts.app' for Default emailTraking use 'emailTrakingViews::layouts.app'
 	 * 'section' => 'content' for Default emailTraking use 'content'
-	 * 'styles_section' => 'styles' for Default emailTraking use 'styles'
      */
     'admin-template' => [
         'name' => 'emailTrakingViews::layouts.app',
         'section' => 'content',
-        'styles_section' => 'styles',
     ],
+
+    /**
+     * Number of emails per page in the admin view
+     */
+    'emails-per-page'=>30,
 
     /**
      * Date Format
      */
-    'date-format' => 'd/m/Y',
+    'date-format' => 'm/d/Y g:i a',
 
 ];
