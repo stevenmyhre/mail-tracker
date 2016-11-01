@@ -14,7 +14,6 @@ class CreateSentEmailsTable extends Migration
     {
         Schema::create('sent_emails', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
             $table->char('hash',32)->unique();
             $table->text('headers');
             $table->string('sender');
@@ -23,6 +22,7 @@ class CreateSentEmailsTable extends Migration
             $table->text('content');
             $table->integer('opens');
             $table->integer('clicks');
+            $table->timestamps();
         });
     }
 

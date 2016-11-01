@@ -1,27 +1,27 @@
 <?php 
 
 return [
-	/**
-	 * To disable the pixel injection, set this to false.
-	 */
-	'inject-pixel'=>true,
+    /**
+     * To disable the pixel injection, set this to false.
+     */
+    'inject-pixel'=>true,
 
-	/**
-	 * To disable injecting tracking links, set this to false.
-	 */
-	'track-links'=>true,
+    /**
+     * To disable injecting tracking links, set this to false.
+     */
+    'track-links'=>true,
 
-	/**
-	 * Optionally expire old emails, set to 0 to keep forever.
-	 */
-	'expire-days'=>60,
+    /**
+     * Optionally expire old emails, set to 0 to keep forever.
+     */
+    'expire-days'=>60,
 
-	/**
-	 * Where should the pingback URL route be?
-	 */
+    /**
+     * Where should the pingback URL route be?
+     */
     'route' => [
         'prefix' => 'email',
-        'middleware' => [],
+        'middleware' => ['web'],
     ],
 
     /**
@@ -29,7 +29,29 @@ return [
      */
     'admin-route' => [
         'prefix' => 'email-manager',
-        'middleware' => 'super',
+        'middleware' => ['web'],
     ],
+
+    /**
+     * Admin Tamplate
+     * example
+     * 'name' => 'layouts.app' for Default emailTraking use 'emailTrakingViews::layouts.app'
+     * 'section' => 'content' for Default emailTraking use 'content'
+     * 'styles_section' => 'styles' for Default emailTraking use 'styles'
+     */
+    'admin-template' => [
+        'name' => 'emailTrakingViews::layouts.app',
+        'section' => 'content',
+    ],
+
+    /**
+     * Number of emails per page in the admin view
+     */
+    'emails-per-page'=>5,
+
+    /**
+     * Date Format
+     */
+    'date-format' => 'm/d/Y g:i a',
 
 ];
