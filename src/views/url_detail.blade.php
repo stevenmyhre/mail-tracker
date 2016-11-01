@@ -7,7 +7,7 @@
             </div>
             <div class="col-sm-2">
                 <h1>
-                    <a href="{{route('mailTracker_Index')}}" class='btn btn-default'>All Sent Emails</a>
+                    <a href="{{route('mailTracker_Index',['page'=>session('mail-tracker-index-page')])}}" class='btn btn-default'>All Sent Emails</a>
                 </h1>
             </div>
         </div>

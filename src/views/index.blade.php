@@ -7,7 +7,26 @@
             </div>
         </div>
         <div class="row">
-            
+            <div class="col-sm-12 text-center">
+                <form action="{{ route('mailTracker_Search') }}" method="post" class="form-inline">
+                    {!! csrf_field() !!}
+                    <div class="form-group">
+                        <label for="search">
+                            Search
+                        </label>
+                        <input type="text" name="search" id="search" value="{{ session('mail-tracker-index-search') }}">
+                    </div>
+                    <button type="submit" class="btn btn-default">
+                        Search
+                    </button>
+                    <div class="btn btn-default">
+                        <a href="{{ route('mailTracker_ClearSearch') }}">
+                            Clear Search
+                        </a>
+                    </div>
+                </form>
+                <hr>
+            </div>
         </div>
         <div class="row">
             <div class="col-sm-12">

@@ -17,13 +17,47 @@ use Mail;
 class AdminController extends Controller
 {
     /**
+     * Sent email search
+     */
+    public function postSearch(Request $request)
+    {
+        session(['mail-tracker-index-search'=>$request->search]);
+        return redirect(route('mailTracker_Index'));
+    }
+
+    /**
+     * Clear search
+     */
+    public function clearSearch()
+    {
+        session(['mail-tracker-index-search'=>null]);
+        return redirect(route('mailTracker_Index'));
+    }
+
+    /**
      * Index.
      *
      * @return \Illuminate\Http\Response
      */
     public function getIndex()
     {
-        $emails = SentEmail::paginate(config('mail-tracker.emails-per-page'));
+        session(['mail-tracker-index-page'=>request()->page]);
+        $search = session('mail-tracker-index-search');
+
+        $query = SentEmail::query();
+
+        if($search) {
+            $terms = explode(" ",$search);
+            foreach($terms as $term) {
+                $query->where(function($q) use($term) {
+                    $q->where('sender','like','%'.$term.'%')
+                        ->orWhere('recipient','like','%'.$term.'%')
+                        ->orWhere('subject','like','%'.$term.'%');
+                });
+            }
+        }
+
+        $emails = $query->paginate(config('mail-tracker.emails-per-page'));
 
         return \View('emailTrakingViews::index')->with('emails', $emails);
     }

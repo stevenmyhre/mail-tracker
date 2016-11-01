@@ -14,14 +14,12 @@ First, upgrade to version 2.0 by running:
 $ composer require jdavidbakr/mail-tracker ~2.0
 ```
 
-Version 2.0 contains a new model that tracks the links that were clicked on.  This requires a migration to create the table.  Be sure to run
+Version 2.0 contains a new model that tracks the links that were clicked on.  This requires a migration to create the table.  There are also additional changes to the config file.  For best results, make a backup copy of config/mail-tracker.php to restore any values you have customized, then delete that file and run
 
 ``` bash
 $ php artisan vendor:publish
 $ php artisan migrate
 ```
-
-after running composer update.
 
 ## Install (Laravel)
 
@@ -52,7 +50,7 @@ $ php artisan migrate
 Via Composer
 
 ``` bash
-$ composer require jdavidbakr/mail-tracker
+$ composer require jdavidbakr/mail-tracker ~2.0
 ```
 
 Register the following service provider in bootstrap/app.php
@@ -147,8 +145,7 @@ The route name is 'mailTracker_Index'. The standard admin panel route is located
 You can use route names to include them into your existing admin menu.
 You can customize your route in the config file.
 You can see all sent emails, total opens, total urls clicks, show individuals emails and show the urls clicked details.
-Also you can send emails from your admin panel.
-All views (email tamplates, panel) can customize in resources/views/vendor/emailTrakingViews.
+All views (email tamplates, panel) can be customized in resources/views/vendor/emailTrakingViews.
 
 ## Contributing
 

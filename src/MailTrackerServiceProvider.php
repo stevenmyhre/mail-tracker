@@ -70,9 +70,10 @@ class MailTrackerServiceProvider extends ServiceProvider
             Route::group($config_admin, function()
             {
                 Route::get('/', 'AdminController@getIndex')->name('mailTracker_Index');
+                Route::post('search', 'AdminController@postSearch')->name('mailTracker_Search');
+                Route::get('clear-search', 'AdminController@clearSearch')->name('mailTracker_ClearSearch');
                 Route::get('show-email/{id}', 'AdminController@getShowEmail')->name('mailTracker_ShowEmail');
                 Route::get('url-detail/{id}', 'AdminController@getUrlDetail')->name('mailTracker_UrlDetail');
-                Route::get('new-email', 'AdminController@getNewEmail')->name('mailTracker_NewEmail');
                 Route::get('send-email', 'AdminController@getSendEmail')->name('mailTracker_SendEmail');
             });
         } else {
