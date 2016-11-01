@@ -26,6 +26,8 @@ class AddressVerificationTest extends TestCase
 	{
 		$track = \jdavidbakr\MailTracker\Model\SentEmail::first();
 
+		Event::fake();
+
 		$pings = $track->opens;
 		$pings++;
 
@@ -34,11 +36,15 @@ class AddressVerificationTest extends TestCase
 
 		$track = $track->fresh();
 		$this->assertEquals($pings, $track->opens);
+
+		Event::assertFired(jdavidbakr\MailTracker\Events\ViewEmailEvent::class);
 	}
 
 	public function testLink()
 	{
 		$track = \jdavidbakr\MailTracker\Model\SentEmail::first();
+
+		Event::fake();
 
 		$clicks = $track->clicks;
 		$clicks++;
@@ -62,5 +68,7 @@ class AddressVerificationTest extends TestCase
 			]);
 		$this->call('GET',$url);
 		$this->assertRedirectedTo($redirect);
+
+		Event::assertFired(jdavidbakr\MailTracker\Events\LinkClickedEvent::class);
 	}
 }
