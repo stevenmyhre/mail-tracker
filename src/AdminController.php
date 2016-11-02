@@ -82,6 +82,9 @@ class AdminController extends Controller
     public function getUrlDetail($id)
     {
         $detalle = SentEmailUrlClicked::where('sent_email_id',$id)->get();
+        if(!$detalle) {
+            return back();
+        }
         return \View('emailTrakingViews::url_detail')->with('details', $detalle);
     }
 }
