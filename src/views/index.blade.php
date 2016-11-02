@@ -36,7 +36,7 @@
                         <th>Subject</th>
                         <th>Opens</th>
                         <th>Clicks</th>
-                        <th>Send At</th>
+                        <th>Sent At</th>
                         <th>View Email</th>
                         <th>Clicks</th>
                     </tr>
