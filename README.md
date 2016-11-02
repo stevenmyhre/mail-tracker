@@ -164,12 +164,12 @@ If you discover any security related issues, please email me@jdavidbaker.com ins
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/jdavidbakr/MailTracker.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/jdavidbakr/mail-tracker.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-travis]: https://img.shields.io/travis/jdavidbakr/MailTracker/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/jdavidbakr/MailTracker.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/jdavidbakr/MailTracker.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/jdavidbakr/MailTracker.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/jdavidbakr/mail-tracker.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/jdavidbakr/mail-tracker
 [link-travis]: https://travis-ci.org/jdavidbakr/MailTracker
