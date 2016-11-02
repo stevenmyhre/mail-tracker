@@ -56,6 +56,7 @@ class AdminController extends Controller
                 });
             }
         }
+        $query->orderBy('created_at','desc');
 
         $emails = $query->paginate(config('mail-tracker.emails-per-page'));
 
