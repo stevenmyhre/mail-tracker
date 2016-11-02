@@ -42,7 +42,12 @@ class MailTracker implements \Swift_Events_SendListener {
 
     	// Purge old records
     	if(config('mail-tracker.expire-days') > 0) {
-    		Model\SentEmail::where('created_at','<',\Carbon\Carbon::now()->subDays(config('mail-tracker.expire-days')))->delete();
+    		$emails = Model\SentEmail::where('created_at','<',\Carbon\Carbon::now()
+                ->subDays(config('mail-tracker.expire-days')))
+                ->select('id')
+                ->get();
+            Model\SentEmailUrlClicked::whereIn('sent_email_id',$emails->pluck('id'))->delete();
+            Model\SentEmail::whereIn('id',$emails->pluck('id'))->delete();
     	}
 	}
 

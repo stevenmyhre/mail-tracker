@@ -4,6 +4,17 @@ class AddressVerificationTest extends TestCase
 {
 	public function testSendMessage()
 	{
+		// Create an old email to purge
+		Config::set('mail-tracker.expire-days', 1);
+		$old_email = \jdavidbakr\MailTracker\Model\SentEmail::create([
+				'hash'=>str_random(32),
+			]);
+		$old_url = \jdavidbakr\MailTracker\Model\SentEmailUrlClicked::create([
+				'sent_email_id'=>$old_email->id,
+				'hash'=>str_random(32),
+			]);
+		\Carbon\Carbon::setTestNow(\Carbon\Carbon::now()->addWeek());
+
 		$faker = Faker\Factory::create();
 		$email = $faker->email;
 		$subject = $faker->sentence;
@@ -28,6 +39,8 @@ class AddressVerificationTest extends TestCase
 				'recipient'=>$name.' <'.$email.'>',
 				'subject'=>$subject,
 			]);
+		$this->assertNull($old_email->fresh());
+		$this->assertNull($old_url->fresh());
 	}
 
 	public function testPing()
