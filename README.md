@@ -134,6 +134,17 @@ protected $listen = [
     ],
 ];
 ```
+
+## Amazon SES features
+
+If you use Amazon SES, you can add some additional information to your tracking.
+
+You must override the SesTransport that comes with Laravel by doing the following:
+
+```
+(need to figure out how to do this still, or wait until Taylor accepts my pull request)
+```
+
 ## Views
 
 When you do the php artisan vendor:publish simple views will add to your resources/views/vendor/emailTrakingViews and you can customize.

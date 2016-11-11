@@ -15,5 +15,11 @@ class SentEmail extends Model
     	'content',
     	'opens',
     	'clicks',
+        'message_id',
+        'meta',
+    ];
+
+    protected $casts = [
+        'meta'=>'collection',
     ];
 }

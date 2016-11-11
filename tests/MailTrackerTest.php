@@ -1,5 +1,7 @@
 <?php
 
+use jdavidbakr\MailTracker\MailTracker;
+
 class AddressVerificationTest extends TestCase
 {
 	public function testSendMessage()
@@ -13,6 +15,7 @@ class AddressVerificationTest extends TestCase
 				'sent_email_id'=>$old_email->id,
 				'hash'=>str_random(32),
 			]);
+		// Go into the future to make sure that the old email gets removed
 		\Carbon\Carbon::setTestNow(\Carbon\Carbon::now()->addWeek());
 
 		$faker = Faker\Factory::create();
@@ -38,6 +41,8 @@ class AddressVerificationTest extends TestCase
 		$this->seeInDatabase('sent_emails',[
 				'recipient'=>$name.' <'.$email.'>',
 				'subject'=>$subject,
+				'sender'=>'From Name <from@johndoe.com>',
+				'recipient'=>"{$name} <{$email}>",
 			]);
 		$this->assertNull($old_email->fresh());
 		$this->assertNull($old_url->fresh());
@@ -63,7 +68,7 @@ class AddressVerificationTest extends TestCase
 
 	public function testLink()
 	{
-		$track = \jdavidbakr\MailTracker\Model\SentEmail::first();
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
 
 		Event::fake();
 
@@ -96,5 +101,40 @@ class AddressVerificationTest extends TestCase
 			]);
 		$this->call('GET',$url);
 		$this->assertRedirectedTo($redirect);
+	}
+
+	/**
+	 * @test
+	 *
+	 * Note that to complete this test, you must have aws credentials as well as a valid
+	 * from address in the mail config.
+	 */
+	public function it_retrieves_the_mesage_id_from_ses()
+	{
+		if(!config('aws.credentials.key') || config('mail.from.address') == null) {
+			$this->markTestIncomplete();
+			return;
+		}
+		Config::set('mail.driver', 'ses');
+		(new Illuminate\Mail\MailServiceProvider(app()))->register();
+		// Must re-register the MailTracker to get the test to work
+        $this->app['mailer']->getSwiftMailer()->registerPlugin(new MailTracker());
+
+		$faker = Faker\Factory::create();
+		$email = 'success@simulator.amazonses.com';
+		$subject = $faker->sentence;
+		$name = $faker->firstName . ' ' .$faker->lastName;
+		\View::addLocation(__DIR__);
+		\Mail::send('email.test', [], function ($message) use($email, $subject, $name) {
+		    $message->to($email, $name);
+		
+		    $message->replyTo('reply-to@johndoe.com', 'Reply-To Name');
+		
+		    $message->subject($subject);
+		
+		    $message->priority(3);
+		});
+		$sent_email = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$this->assertEquals(0, preg_match('/swift\.generated/',$sent_email->message_id));
 	}
 }
