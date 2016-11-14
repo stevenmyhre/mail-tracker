@@ -80,7 +80,7 @@ class MailTrackerServiceProvider extends ServiceProvider
                 Route::get('clear-search', 'AdminController@clearSearch')->name('mailTracker_ClearSearch');
                 Route::get('show-email/{id}', 'AdminController@getShowEmail')->name('mailTracker_ShowEmail');
                 Route::get('url-detail/{id}', 'AdminController@getUrlDetail')->name('mailTracker_UrlDetail');
-                Route::get('send-email', 'AdminController@getSendEmail')->name('mailTracker_SendEmail');
+                Route::get('smtp-detail/{id}', 'AdminController@getSmtpDetail')->name('mailTracker_SmtpDetail');
             });
         } else {
             $app = $this->app;
@@ -90,7 +90,7 @@ class MailTrackerServiceProvider extends ServiceProvider
                 $app->get('clear-search', 'AdminController@clearSearch')->name('mailTracker_ClearSearch');
                 $app->get('show-email/{id}', 'AdminController@getShowEmail')->name('mailTracker_ShowEmail');
                 $app->get('url-detail/{id}', 'AdminController@getUrlDetail')->name('mailTracker_UrlDetail');
-                $app->get('send-email', 'AdminController@getSendEmail')->name('mailTracker_SendEmail');
+                $app->get('smtp-detail/{id}', 'AdminController@getSmtpDetail')->name('mailTracker_SmtpDetail');
             });
         }
     }

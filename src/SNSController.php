@@ -106,6 +106,7 @@ class SNSController extends Controller
         if($sent_email) {
             $meta = $sent_email->meta;
             $meta->put('complaint',true);
+            $meta->put('success',false);
             $meta->put('complaint_time',$message->complaint->timestamp);
             if(!empty($message->complaint->complaintFeedbackType)) {
                 $meta->put('complaint_type',$message->complaint->complaintFeedbackType);
