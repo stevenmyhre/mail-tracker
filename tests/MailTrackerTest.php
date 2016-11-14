@@ -1,6 +1,7 @@
 <?php
 
 use jdavidbakr\MailTracker\MailTracker;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AddressVerificationTest extends TestCase
 {
@@ -50,7 +51,7 @@ class AddressVerificationTest extends TestCase
 
 	public function testPing()
 	{
-		$track = \jdavidbakr\MailTracker\Model\SentEmail::first();
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
 
 		Event::fake();
 
@@ -137,4 +138,194 @@ class AddressVerificationTest extends TestCase
 		$sent_email = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
 		$this->assertEquals(0, preg_match('/swift\.generated/',$sent_email->message_id));
 	}
+
+	/**
+	 * SNS Tests
+	 */
+	
+	/**
+	 * @test
+	 */
+	public function it_confirms_a_subscription()
+	{
+		$url = action('\jdavidbakr\MailTracker\SNSController@callback');
+		$this->post($url,[
+				'message'=>json_encode([
+						// Required
+				        'Message'=>'test subscription message',
+				        'MessageId'=>str_random(10),
+				        'Timestamp'=>\Carbon\Carbon::now()->timestamp,
+				        'TopicArn'=>str_random(10),
+				        'Type'=>'SubscriptionConfirmation',
+				        'Signature'=>str_random(32),
+				        'SigningCertURL'=>str_random(32),
+				        'SignatureVersion'=>1,
+				        // Request-specific
+						'SubscribeURL'=>'http://google.com',
+						'Token'=>str_random(10),
+					])
+			]);
+		$this->see('subscription confirmed');
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_processes_a_delivery()
+	{
+		// Set a track email to use a known message id
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$message_id = str_random(32);
+		$track->message_id = $message_id;
+		$track->save();
+
+		$this->post(action('\jdavidbakr\MailTracker\SNSController@callback'),[
+				'message'=>json_encode([
+						// Required
+				        'Message'=>json_encode([
+							'notificationType'=>'Delivery',
+							'mail'=>[
+								'timestamp'=>\Carbon\Carbon::now()->timestamp,
+								'messageId'=>$message_id,
+								'source'=>$track->sender,
+								'sourceArn'=>str_random(32),
+								'sendingAccountId'=>str_random(10),
+								'destination'=>[$track->recipient],
+							],
+					        'delivery'=>[
+					        	'timestamp'=>\Carbon\Carbon::now()->timestamp,
+					        	'processingTimeMillis'=>1000,
+					        	'recipients'=>[$track->recipient],
+					        	'smtpResponse'=>'test smtp response',
+					        	'reportingMTA'=>str_random(10),
+					        ],
+				        ]),
+				        'MessageId'=>str_random(10),
+				        'Timestamp'=>\Carbon\Carbon::now()->timestamp,
+				        'TopicArn'=>str_random(10),
+				        'Type'=>'Notification',
+				        'Signature'=>str_random(32),
+				        'SigningCertURL'=>str_random(32),
+				        'SignatureVersion'=>1,
+				        // Request-specific
+				        
+					])
+			]);
+		$this->see('notification processed');
+		$track = $track->fresh();
+		$meta = $track->meta;
+		$this->assertEquals('test smtp response',$meta->get('smtpResponse'));
+		$this->assertTrue($meta->get('success'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_processes_a_bounce()
+	{
+		// Set a track email to use a known message id
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$message_id = str_random(32);
+		$track->message_id = $message_id;
+		$track->save();
+
+		$this->post(action('\jdavidbakr\MailTracker\SNSController@callback'),[
+				'message'=>json_encode([
+						// Required
+				        'Message'=>json_encode([
+							'notificationType'=>'Bounce',
+							'mail'=>[
+								'timestamp'=>\Carbon\Carbon::now()->timestamp,
+								'messageId'=>$message_id,
+								'source'=>$track->sender,
+								'sourceArn'=>str_random(32),
+								'sendingAccountId'=>str_random(10),
+								'destination'=>[$track->recipient],
+							],
+					        'bounce'=>[
+					        	'bounceType'=>'Permanent',
+					        	'bounceSubType'=>'General',
+					        	'bouncedRecipients'=>[
+					        		[
+						        		'status'=>'5.0.0',
+						        		'action'=>'failed',
+						        		'diagnosticCode'=>'smtp; 550 user unknown',
+						        		'emailAddress'=>'recipient@example.com',
+					        		],
+					        	],
+								'timestamp'=>\Carbon\Carbon::now()->timestamp,
+								'feedbackId'=>str_random(10),
+					        ],
+				        ]),
+				        'MessageId'=>str_random(10),
+				        'Timestamp'=>\Carbon\Carbon::now()->timestamp,
+				        'TopicArn'=>str_random(10),
+				        'Type'=>'Notification',
+				        'Signature'=>str_random(32),
+				        'SigningCertURL'=>str_random(32),
+				        'SignatureVersion'=>1,
+				        // Request-specific
+				        
+					])
+			]);
+		$this->see('notification processed');
+		$track = $track->fresh();
+		$meta = $track->meta;
+		$this->assertFalse($meta->get('success'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_processes_a_complaint()
+	{
+		// Set a track email to use a known message id
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$message_id = str_random(32);
+		$track->message_id = $message_id;
+		$track->save();
+
+		$this->post(action('\jdavidbakr\MailTracker\SNSController@callback'),[
+				'message'=>json_encode([
+						// Required
+				        'Message'=>json_encode([
+							'notificationType'=>'Complaint',
+							'mail'=>[
+								'timestamp'=>\Carbon\Carbon::now()->timestamp,
+								'messageId'=>$message_id,
+								'source'=>$track->sender,
+								'sourceArn'=>str_random(32),
+								'sendingAccountId'=>str_random(10),
+								'destination'=>[$track->recipient],
+							],
+					        'complaint'=>[
+					        	'complainedRecipients'=>[
+					        		[
+						        		'emailAddress'=>'recipient@example.com',
+					        		],
+					        	],
+								'timestamp'=>\Carbon\Carbon::now()->timestamp,
+								'feedbackId'=>str_random(10),
+								'userAgent'=>str_random(10),
+								'complaintFeedbackType'=>'feedback type',
+								'arrivalDate'=>\Carbon\Carbon::now(),
+					        ],
+				        ]),
+				        'MessageId'=>str_random(10),
+				        'Timestamp'=>\Carbon\Carbon::now()->timestamp,
+				        'TopicArn'=>str_random(10),
+				        'Type'=>'Notification',
+				        'Signature'=>str_random(32),
+				        'SigningCertURL'=>str_random(32),
+				        'SignatureVersion'=>1,
+				        // Request-specific
+				        
+					])
+			]);
+		$this->see('notification processed');
+		$track = $track->fresh();
+		$meta = $track->meta;
+		$this->assertFalse($meta->get('success'));
+	}
 }
+

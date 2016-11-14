@@ -6,15 +6,17 @@
 
 MailTracker will hook into all outgoing emails from Laravel/Lumen and inject a tracking code into it.  It will also store the rendered email in the database.  There is also an interface to view sent emails.
 
-## Upgrade from 1.x
+## NOTE: For Laravel < 5.3.23 you MUST use version 2.0 or earlier.
 
-First, upgrade to version 2.0 by running:
+## Upgrade from 2.0 or earlier
+
+First, upgrade to version 2.1 by running:
 
 ``` bash
-$ composer require jdavidbakr/mail-tracker ~2.0
+$ composer require jdavidbakr/mail-tracker ~2.1
 ```
 
-Version 2.0 contains a new model that tracks the links that were clicked on.  This requires a migration to create the table.  There are also additional changes to the config file.  For best results, make a backup copy of config/mail-tracker.php to restore any values you have customized, then delete that file and run
+If you are updating from an earlier version, you will need to update the config file and run the new migrations.  For best results, make a backup copy of config/mail-tracker.php to restore any values you have customized, then delete that file and run
 
 ``` bash
 $ php artisan vendor:publish
@@ -26,7 +28,7 @@ $ php artisan migrate
 Via Composer
 
 ``` bash
-$ composer require jdavidbakr/mail-tracker ~2.0
+$ composer require jdavidbakr/mail-tracker ~2.1
 ```
 
 Add the following to the providers array in config/app.php:
@@ -50,7 +52,7 @@ $ php artisan migrate
 Via Composer
 
 ``` bash
-$ composer require jdavidbakr/mail-tracker ~2.0
+$ composer require jdavidbakr/mail-tracker ~2.1
 ```
 
 Register the following service provider in bootstrap/app.php
@@ -86,6 +88,10 @@ When an email is viewed or a link is clicked, its tracking information is counte
 * jdavidbakr\MailTracker\Events\ViewEmailEvent
 * jdavidbakr\MailTracker\Events\LinkClickedEvent
 
+If you are using the Amazon SNS notification system, an event is fired when you receive a permanent bounce.  You may want to mark the email as bad or remove it from your database.
+
+* jdavidbakr\MailTracker\Events\PermanentBouncedMessageEvent
+
 To install an event listener, you will want to create a file like the following:
 
 ``` php
@@ -120,6 +126,38 @@ class EmailViewed
 }
 ```
 
+``` php
+<?php
+
+namespace App\Listeners;
+
+use jdavidbakr\MailTracker\Events\PermanentBouncedMessageEvent;
+
+class BouncedEmail
+{
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  PermanentBouncedMessageEvent  $event
+     * @return void
+     */
+    public function handle(PermanentBouncedMessageEvent $event)
+    {
+        // Access the email address using $event->email_address...
+    }
+}
+```
+
 Then you must register the event in your \App\Providers\EventServiceProvider $listen array:
 
 ``` php
@@ -132,18 +170,15 @@ protected $listen = [
     'jdavidbakr\MailTracker\Events\ViewEmailEvent' => [
         'App\Listeners\EmailViewed',
     ],
+    'jdavidbakr\MailTracker\Events\PermanentBouncedMessageEvent' => [
+        'App\Listeners\BouncedEmail',
+    ],
 ];
 ```
 
 ## Amazon SES features
 
-If you use Amazon SES, you can add some additional information to your tracking.
-
-You must override the SesTransport that comes with Laravel by doing the following:
-
-```
-(need to figure out how to do this still, or wait until Taylor accepts my pull request)
-```
+If you use Amazon SES, you can add some additional information to your tracking.  To set up the SES callbacks, first set up SES notifications under your domain in the SES control panel.  Then subscribe to the topic by going to the admin panel of the notification topic and creating a subscription for the URL you copied from the admin page.  The system should immediately respond to the subscription request.  If you like, you can use multiple subscriptions (i.e. one for delivery, one for bounces).  See above for events that are fired on a failed message.
 
 ## Views
 
