@@ -7,6 +7,13 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-sm-12">
+                <h4 class="text-center">
+                    SNS Endpoint: {{ route('mailTracker_SNS') }}
+                </h4>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-sm-12 text-center">
                 <form action="{{ route('mailTracker_Search') }}" method="post" class="form-inline">
                     {!! csrf_field() !!}
