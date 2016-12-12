@@ -111,7 +111,7 @@ class MailTracker implements \Swift_Events_SendListener {
     	if(preg_match("/^(.*<body[^>]*>)(.*)$/", $html, $matches)) {
     		$html = $matches[1].$tracking_pixel.$matches[2];
     	} else {
-    		$html = $tracking_pixel . $html;
+    		$html = $html . $tracking_pixel;
     	}
     	$html = str_replace($linebreak,"\n",$html);
 
