@@ -19,6 +19,8 @@ class AddressVerificationTest extends TestCase
 		// Go into the future to make sure that the old email gets removed
 		\Carbon\Carbon::setTestNow(\Carbon\Carbon::now()->addWeek());
 
+		Event::fake();
+
 		$faker = Faker\Factory::create();
 		$email = $faker->email;
 		$subject = $faker->sentence;
@@ -39,6 +41,9 @@ class AddressVerificationTest extends TestCase
 		
 		    $message->priority(3);
 		});
+
+		Event::assertFired(jdavidbakr\MailTracker\Events\EmailSentEvent::class);
+
 		$this->seeInDatabase('sent_emails',[
 				'recipient'=>$name.' <'.$email.'>',
 				'subject'=>$subject,

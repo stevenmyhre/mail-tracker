@@ -4,6 +4,8 @@ namespace jdavidbakr\MailTracker;
 
 use jdavidbakr\MailTracker\Model\SentEmail;
 use jdavidbakr\MailTracker\Model\SentEmailUrlClicked;
+use jdavidbakr\MailTracker\Events\EmailSentEvent;
+use Event;
 
 class MailTracker implements \Swift_Events_SendListener {
 
@@ -38,7 +40,7 @@ class MailTracker implements \Swift_Events_SendListener {
                     }
                 }    	
 
-                SentEmail::create([
+                $tracker = SentEmail::create([
                         'hash'=>$hash,
                         'headers'=>$headers->toString(),
                         'sender'=>$from_name." <".$from_email.">",
@@ -50,6 +52,7 @@ class MailTracker implements \Swift_Events_SendListener {
                         'message_id'=>$message->getId(),
                         'meta'=>[],
                     ]);
+                Event::fire(new EmailSentEvent($tracker));
             }
         }
 

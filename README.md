@@ -83,8 +83,9 @@ Once installed, all outgoing mail will be logged to the database.  The following
 
 ## Events
 
-When an email is viewed or a link is clicked, its tracking information is counted in the database using the jdavidbark\MailTracker\Model\SentEmail model. You may want to do additional processing on these events, so an event is fired in both cases:
+When an email is sent, viewed, or a link is clicked, its tracking information is counted in the database using the jdavidbark\MailTracker\Model\SentEmail model. You may want to do additional processing on these events, so an event is fired in these cases:
 
+* jdavidbakr\MailTracker\Events\EmailSentEvent
 * jdavidbakr\MailTracker\Events\ViewEmailEvent
 * jdavidbakr\MailTracker\Events\LinkClickedEvent
 
