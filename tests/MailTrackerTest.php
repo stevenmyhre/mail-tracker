@@ -332,5 +332,38 @@ class AddressVerificationTest extends TestCase
 		$meta = $track->meta;
 		$this->assertFalse($meta->get('success'));
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_retrieves_header_data()
+	{
+		$faker = Faker\Factory::create();
+		$email = $faker->email;
+		$subject = $faker->sentence;
+		$name = $faker->firstName . ' ' .$faker->lastName;
+		$header_test = str_random(10);
+		\View::addLocation(__DIR__);
+		\Mail::send('email.test', [], function ($message) use($email, $subject, $name, $header_test) {
+		    $message->from('from@johndoe.com', 'From Name');
+		    $message->sender('sender@johndoe.com', 'Sender Name');
+		
+		    $message->to($email, $name);
+		
+		    $message->cc('cc@johndoe.com', 'CC Name');
+		    $message->bcc('bcc@johndoe.com', 'BCC Name');
+		
+		    $message->replyTo('reply-to@johndoe.com', 'Reply-To Name');
+		
+		    $message->subject($subject);
+		
+		    $message->priority(3);
+
+		    $message->getHeaders()->addTextHeader('X-Header-Test',$header_test);
+		});
+
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$this->assertEquals($header_test, $track->getHeader('X-Header-Test'));
+	}
 }
 

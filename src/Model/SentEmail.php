@@ -67,4 +67,25 @@ class SentEmail extends Model
         }
         return implode(" | ",$responses);
     }
+
+    /**
+     * Returns the header requested from our stored header info
+     */
+    public function getHeader($key)
+    {
+        $headers = collect(preg_split("/\r\n|\n|\r/", $this->headers))
+            ->transform(function($header) {
+                list($key,$value) = explode(":",$header.":");
+                return collect([
+                    'key'=>trim($key),
+                    'value'=>trim($value)
+                ]);
+            })->filter(function($header) {
+                return $header->get('key');
+            })->keyBy('key')
+            ->transform(function($header) {
+                return $header->get('value');
+            });
+        return $headers->get($key);
+    }
 }

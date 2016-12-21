@@ -177,6 +177,37 @@ protected $listen = [
 ];
 ```
 
+### Passing data to the event listeners
+
+Often times you may need to link a sent email to another model.  The best way to handle this is to add a header to your outgoing email that you can retrieve in your event listener.  Here is an example:
+
+``` php
+/**
+ * Send an email and do processing on a model with the email
+ */
+\Mail::send('email.test', [], function ($message) use($email, $subject, $name, $model) {
+    $message->from('from@johndoe.com', 'From Name');
+    $message->sender('sender@johndoe.com', 'Sender Name');
+    $message->to($email, $name);
+    $message->subject($subject);
+
+    // Create a custom header that we can later retrieve
+    $message->getHeaders()->addTextHeader('X-Model-ID',$model->id);
+});
+```
+
+and then in your event listener:
+
+```
+public function handle(EmailSentEvent $event)
+{
+    $tracker = $event->sent_email;
+    $model_id = $event->getHeader('X-Model-ID');
+    $model = Model::find($model_id);
+    // Perform your tracking/linking tasks on $model knowing the SentEmail object
+}
+```
+
 ## Amazon SES features
 
 If you use Amazon SES, you can add some additional information to your tracking.  To set up the SES callbacks, first set up SES notifications under your domain in the SES control panel.  Then subscribe to the topic by going to the admin panel of the notification topic and creating a subscription for the URL you copied from the admin page.  The system should immediately respond to the subscription request.  If you like, you can use multiple subscriptions (i.e. one for delivery, one for bounces).  See above for events that are fired on a failed message.
