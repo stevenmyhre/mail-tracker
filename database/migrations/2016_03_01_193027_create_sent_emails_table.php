@@ -15,13 +15,13 @@ class CreateSentEmailsTable extends Migration
         Schema::create('sent_emails', function (Blueprint $table) {
             $table->increments('id');
             $table->char('hash',32)->unique();
-            $table->text('headers');
-            $table->string('sender');
-            $table->string('recipient');
-            $table->string('subject');
-            $table->text('content');
-            $table->integer('opens');
-            $table->integer('clicks');
+            $table->text('headers')->nullable();
+            $table->string('sender')->nullable();
+            $table->string('recipient')->nullable();
+            $table->string('subject')->nullable();
+            $table->text('content')->nullable();
+            $table->integer('opens')->nullable();
+            $table->integer('clicks')->nullable();
             $table->timestamps();
         });
     }

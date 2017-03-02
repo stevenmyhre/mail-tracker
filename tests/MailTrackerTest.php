@@ -2,9 +2,58 @@
 
 use jdavidbakr\MailTracker\MailTracker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Orchestra\Testbench\BrowserKit\TestCase;
 
 class AddressVerificationTest extends TestCase
 {
+    /**
+     * Setup the test environment.
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->artisan('migrate', ['--database' => 'testing']);
+    }
+
+    /**
+     * Get package providers.  At a minimum this is the package being tested, but also
+     * would include packages upon which our package depends, e.g. Cartalyst/Sentry
+     * In a normal app environment these would be added to the 'providers' array in
+     * the config/app.php file.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     *
+     * @return array
+     */
+	protected function getPackageProviders($app)
+	{
+	    return ['jdavidbakr\MailTracker\MailTrackerServiceProvider'];
+	}
+
+	/**
+     * Define environment setup.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     *
+     * @return void
+     */
+	protected function getEnvironmentSetUp($app)
+	{
+	    // Setup default database to use sqlite :memory:
+	    $app['config']->set('database.default', 'testbench');
+	    $app['config']->set('database.connections.testbench', [
+	        'driver'   => 'sqlite',
+	        'database' => ':memory:',
+	        'prefix'   => '',
+	    ]);
+	    $app['config']->set('aws.credentials', [
+	        'key'    => env('AWS_ACCESS_KEY_ID'),
+	        'secret' => env('AWS_SECRET_ACCESS_KEY')
+	    ]);
+	    $app['config']->set('mail.from.address',env('FROM_EMAIL'));
+	}
+
 	public function testSendMessage()
 	{
 		// Create an old email to purge
@@ -42,7 +91,7 @@ class AddressVerificationTest extends TestCase
 		    $message->priority(3);
 		});
 
-		Event::assertFired(jdavidbakr\MailTracker\Events\EmailSentEvent::class);
+		Event::assertDispatched(jdavidbakr\MailTracker\Events\EmailSentEvent::class);
 
 		$this->seeInDatabase('sent_emails',[
 				'recipient'=>$name.' <'.$email.'>',
@@ -56,7 +105,9 @@ class AddressVerificationTest extends TestCase
 
 	public function testPing()
 	{
-		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::create([
+				'hash'=>str_random(32),
+			]);
 
 		Event::fake();
 
@@ -69,12 +120,14 @@ class AddressVerificationTest extends TestCase
 		$track = $track->fresh();
 		$this->assertEquals($pings, $track->opens);
 
-		Event::assertFired(jdavidbakr\MailTracker\Events\ViewEmailEvent::class);
+		Event::assertDispatched(jdavidbakr\MailTracker\Events\ViewEmailEvent::class);
 	}
 
 	public function testLink()
 	{
-		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::create([
+				'hash'=>str_random(32),
+			]);
 
 		Event::fake();
 
@@ -90,7 +143,7 @@ class AddressVerificationTest extends TestCase
 		$this->call('GET',$url);
 		$this->assertRedirectedTo($redirect);
 
-		Event::assertFired(jdavidbakr\MailTracker\Events\LinkClickedEvent::class);
+		Event::assertDispatched(jdavidbakr\MailTracker\Events\LinkClickedEvent::class);
 
 		$this->seeInDatabase('sent_emails_url_clicked',[
 				'url'=>$redirect,
@@ -178,8 +231,9 @@ class AddressVerificationTest extends TestCase
 	 */
 	public function it_processes_a_delivery()
 	{
-		// Set a track email to use a known message id
-		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::create([
+				'hash'=>str_random(32),
+			]);
 		$message_id = str_random(32);
 		$track->message_id = $message_id;
 		$track->save();
@@ -228,8 +282,9 @@ class AddressVerificationTest extends TestCase
 	 */
 	public function it_processes_a_bounce()
 	{
-		// Set a track email to use a known message id
-		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::create([
+				'hash'=>str_random(32),
+			]);
 		$message_id = str_random(32);
 		$track->message_id = $message_id;
 		$track->save();
@@ -284,8 +339,9 @@ class AddressVerificationTest extends TestCase
 	 */
 	public function it_processes_a_complaint()
 	{
-		// Set a track email to use a known message id
-		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
+		$track = \jdavidbakr\MailTracker\Model\SentEmail::create([
+				'hash'=>str_random(32),
+			]);
 		$message_id = str_random(32);
 		$track->message_id = $message_id;
 		$track->save();

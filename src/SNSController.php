@@ -5,7 +5,7 @@ namespace jdavidbakr\MailTracker;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Event;
 use jdavidbakr\MailTracker\Model\SentEmail;
 use jdavidbakr\MailTracker\Events\PermanentBouncedMessageEvent;

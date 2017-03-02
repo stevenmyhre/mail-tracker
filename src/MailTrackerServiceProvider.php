@@ -28,7 +28,7 @@ class MailTrackerServiceProvider extends ServiceProvider
     {
         // Publish pieces
         $this->publishConfig();
-        $this->publishMigrations();
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->publishViews();
 
         // Hook into the mailer
@@ -58,26 +58,6 @@ class MailTrackerServiceProvider extends ServiceProvider
         if (!$this->isLumen()) {
             $this->publishes([
                 __DIR__.'/../config/mail-tracker.php' => config_path('mail-tracker.php')
-            ], 'config');
-        }
-    }
-
-    /**
-     * Publish the migrations needed
-     *
-     * @return void
-     */
-    protected function publishMigrations()
-    {
-        if (!$this->isLumen()) {
-            $this->publishes([
-                __DIR__.'/../migrations/2016_03_01_193027_create_sent_emails_table.php' => database_path('migrations/2016_03_01_193027_create_sent_emails_table.php')
-            ], 'config');
-            $this->publishes([
-                __DIR__.'/../migrations/2016_09_07_193027_create_sent_emails_Url_Clicked_table.php' => database_path('migrations/2016_09_07_193027_create_sent_emails_Url_Clicked_table.php')
-            ], 'config');
-            $this->publishes([
-                __DIR__.'/../migrations/2016_11_10_213551_add-message-id-to-sent-emails-table.php' => database_path('migrations/2016_11_10_213551_add-message-id-to-sent-emails-table.php')
             ], 'config');
         }
     }
