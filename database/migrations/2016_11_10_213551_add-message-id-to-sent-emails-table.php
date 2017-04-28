@@ -15,7 +15,7 @@ class AddMessageIdToSentEmailsTable extends Migration
     {
         Schema::table('sent_emails', function(Blueprint $table) {
             $table->string('message_id')->nullable();
-            $table->text('meta')->default('[]');
+            $table->text('meta');
         });
     }
 
