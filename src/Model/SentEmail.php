@@ -23,6 +23,12 @@ class SentEmail extends Model
         'meta'=>'collection',
     ];
 
+    public function getConnectionName()
+    {
+        $connName = config('mail-tracker.connection');
+        return $connName ?: config('database.default');
+    }
+
     /**
      * Returns a bootstrap class about the success/failure of the message
      * @return [type] [description]
