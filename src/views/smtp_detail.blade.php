@@ -27,10 +27,10 @@
                 Subject: {{$details->subject}} <br>
                 Sent At: {{$details->created_at->format(config('mail-tracker.date-format'))}} <br>
                 @if($details->first_opened_at)
-                    First Opened At: {{ $details->first_opened_at->format(config('mail-tracker.date-format')) }}
+                    First Opened At: {{ $details->first_opened_at->format(config('mail-tracker.date-format')) }} <br>
                 @endif
                 @if($details->last_opened_at)
-                    Last Opened At: {{ $details->last_opened_at->format(config('mail-tracker.date-format')) }}
+                    Last Opened At: {{ $details->last_opened_at->format(config('mail-tracker.date-format')) }} <br>
                 @endif
                 SMTP Details: {{ $details->smtp_info }}
             </div>
