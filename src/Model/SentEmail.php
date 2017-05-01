@@ -20,7 +20,12 @@ class SentEmail extends Model
     ];
 
     protected $casts = [
-        'meta'=>'collection',
+        'meta'=>'collection'
+    ];
+
+    protected $dates = [
+        'first_opened_at',
+        'last_opened_at',
     ];
 
     /**
@@ -29,7 +34,7 @@ class SentEmail extends Model
      */
     public function getReportClassAttribute()
     {
-        if($this->meta->has('success')) {
+        if($this->meta && $this->meta->has('success')) {
             if($this->meta->get('success')) {
                 return 'success';
             } else {
