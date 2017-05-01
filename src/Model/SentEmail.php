@@ -28,6 +28,12 @@ class SentEmail extends Model
         'last_opened_at',
     ];
 
+    public function getConnectionName()
+    {
+        $connName = config('mail-tracker.connection');
+        return $connName ?: config('database.default');
+    }
+
     /**
      * Returns a bootstrap class about the success/failure of the message
      * @return [type] [description]

@@ -54,4 +54,9 @@ return [
      */
     'date-format' => 'm/d/Y g:i a',
 
+    /**
+     * Default database connection name (optional - use null for default)
+     */
+    'connection' => null
+
 ];

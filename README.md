@@ -47,6 +47,9 @@ Run the migration
 $ php artisan migrate
 ```
 
+Note: If you would like to use a different connection to store your models, 
+you should update the mail-tracker.php config entry ```connection``` before running the migrations. 
+
 ## Install (Lumen)
 
 Via Composer
@@ -67,6 +70,9 @@ Run the migration
 ``` bash
 $ php artisan migrate
 ```
+
+Note: If you would like to use a different connection to store your models, 
+you should update the mail-tracker.php config entry ```connection``` before running the migrations.
 
 ## Usage
 

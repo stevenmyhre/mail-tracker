@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use jdavidbakr\MailTracker\Model\SentEmail;
 
 class CreateSentEmailsTable extends Migration
 {
@@ -12,7 +13,7 @@ class CreateSentEmailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sent_emails', function (Blueprint $table) {
+        Schema::connection((new SentEmail)->getConnectionName())->create('sent_emails', function (Blueprint $table) {
             $table->increments('id');
             $table->char('hash',32)->unique();
             $table->text('headers')->nullable();
@@ -33,6 +34,6 @@ class CreateSentEmailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('sent_emails');
+        Schema::connection((new SentEmail())->getConnectionName())->drop('sent_emails');
     }
 }

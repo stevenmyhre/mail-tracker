@@ -48,6 +48,11 @@ class AddressVerificationTest extends TestCase
 	        'database' => ':memory:',
 	        'prefix'   => '',
 	    ]);
+	    $app['config']->set('database.connections.secondary', [
+	        'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => ''
+        ]);
 	    $app['config']->set('aws.credentials', [
 	        'key'    => env('AWS_ACCESS_KEY_ID'),
 	        'secret' => env('AWS_SECRET_ACCESS_KEY')
@@ -506,5 +511,61 @@ class AddressVerificationTest extends TestCase
 		$track = \jdavidbakr\MailTracker\Model\SentEmail::orderBy('id','desc')->first();
 		$this->assertEquals($header_test, $track->getHeader('X-Header-Test'));
 	}
+
+    /**
+     * @test
+     */
+    public function it_handles_secondary_connection()
+    {
+        // Create an old email to purge
+        Config::set('mail-tracker.expire-days', 1);
+
+        Config::set('mail-tracker.connection', 'secondary');
+        $this->app['migrator']->setConnection('secondary');
+        $this->artisan('migrate', ['--database' => 'secondary']);
+
+        $old_email = \jdavidbakr\MailTracker\Model\SentEmail::create([
+            'hash'=>str_random(32),
+        ]);
+        $old_url = \jdavidbakr\MailTracker\Model\SentEmailUrlClicked::create([
+            'sent_email_id'=>$old_email->id,
+            'hash'=>str_random(32),
+        ]);
+        // Go into the future to make sure that the old email gets removed
+        \Carbon\Carbon::setTestNow(\Carbon\Carbon::now()->addWeek());
+
+        Event::fake();
+
+        $faker = Faker\Factory::create();
+        $email = $faker->email;
+        $subject = $faker->sentence;
+        $name = $faker->firstName . ' ' .$faker->lastName;
+        \View::addLocation(__DIR__);
+        \Mail::send('email.test', [], function ($message) use($email, $subject, $name) {
+            $message->from('from@johndoe.com', 'From Name');
+            $message->sender('sender@johndoe.com', 'Sender Name');
+
+            $message->to($email, $name);
+
+            $message->cc('cc@johndoe.com', 'CC Name');
+            $message->bcc('bcc@johndoe.com', 'BCC Name');
+
+            $message->replyTo('reply-to@johndoe.com', 'Reply-To Name');
+
+            $message->subject($subject);
+
+            $message->priority(3);
+        });
+
+        Event::assertDispatched(jdavidbakr\MailTracker\Events\EmailSentEvent::class);
+
+        $this->seeInDatabase('sent_emails',[
+            'recipient'=>$name.' <'.$email.'>',
+            'subject'=>$subject,
+            'sender'=>'From Name <from@johndoe.com>'
+        ],'secondary');
+        $this->assertNull($old_email->fresh());
+        $this->assertNull($old_url->fresh());
+    }
 }
 
