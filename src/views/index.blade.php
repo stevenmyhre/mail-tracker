@@ -59,7 +59,11 @@
                       <td>{{$email->subject}}</td>
                       <td>{{$email->opens}}</td>
                       <td>{{$email->clicks}}</td>
-                      <td>{{$email->created_at->format(config('mail-tracker.date-format'))}}</td>
+                      <td>
+                          <a href="{{ route('mailTracker_SmtpDetail', $email->id) }}" title="SMTP details">
+                            {{$email->created_at->format(config('mail-tracker.date-format'))}}
+                          </a>
+                      </td>
                       <td>
                           <a href="{{route('mailTracker_ShowEmail',$email->id)}}" target="_blank">
                             View

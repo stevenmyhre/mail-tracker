@@ -26,6 +26,12 @@
                 Recipient: {{$details->first()->email->recipient}} <br>
                 Subject: {{$details->first()->email->subject}} <br>
                 Sent At: {{$details->first()->email->created_at->format(config('mail-tracker.date-format'))}}
+                @if($details->first()->email->first_opened_at)
+                    First Opened At: {{$details->first()->email->first_opened_at->format(config('mail-tracker.date-format'))}}
+                @endif
+                @if($details->first()->email->last_opened_at)
+                    Last Opened At: {{$details->first()->email->last_opened_at->format(config('mail-tracker.date-format'))}}
+                @endif
             </div>
         </div>
         <div class="row">

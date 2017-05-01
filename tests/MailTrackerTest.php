@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use jdavidbakr\MailTracker\MailTracker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Orchestra\Testbench\BrowserKit\TestCase;
@@ -121,6 +122,24 @@ class AddressVerificationTest extends TestCase
 		$this->assertEquals($pings, $track->opens);
 
 		Event::assertDispatched(jdavidbakr\MailTracker\Events\ViewEmailEvent::class);
+
+        // view again, to increment count and test opened dates
+        $first = Carbon::now();
+        $testNow = Carbon::now()->addDays(2);
+        Carbon::setTestNow($testNow);
+
+        $this->visit($url);
+        $pings++;
+
+        $track = $track->fresh();
+
+        Event::assertDispatched(jdavidbakr\MailTracker\Events\ViewEmailEvent::class);
+
+        Carbon::setTestNow(null);
+        $this->assertEquals($pings, $track->opens);
+        $this->assertNotNull($track->first_opened_at);
+        $this->assertEquals(Carbon::now()->timestamp, $track->first_opened_at->timestamp, 20);
+        $this->assertEquals($testNow->timestamp, $track->last_opened_at->timestamp, 20);
 	}
 
 	public function testLink()

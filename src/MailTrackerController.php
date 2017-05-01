@@ -2,6 +2,7 @@
 
 namespace jdavidbakr\MailTracker;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Response;
 use Event;
@@ -29,7 +30,10 @@ class MailTrackerController extends Controller
 		$tracker = Model\SentEmail::where('hash',$hash)
 			->first();
 		if($tracker) {
-			$tracker->opens++;
+		    $tracker->opens++;
+		    if(!$tracker->first_opened_at)
+		        $tracker->first_opened_at = new Carbon();
+			$tracker->last_opened_at = new Carbon();
 			$tracker->save();
             Event::fire(new ViewEmailEvent($tracker));
 		}

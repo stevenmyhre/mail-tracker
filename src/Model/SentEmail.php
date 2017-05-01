@@ -20,7 +20,12 @@ class SentEmail extends Model
     ];
 
     protected $casts = [
-        'meta'=>'collection',
+        'meta'=>'collection'
+    ];
+
+    protected $dates = [
+        'first_opened_at',
+        'last_opened_at',
     ];
 
     /**
