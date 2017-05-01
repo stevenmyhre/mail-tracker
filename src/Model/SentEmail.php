@@ -40,7 +40,7 @@ class SentEmail extends Model
      */
     public function getReportClassAttribute()
     {
-        if($this->meta->has('success')) {
+        if($this->meta && $this->meta->has('success')) {
             if($this->meta->get('success')) {
                 return 'success';
             } else {
